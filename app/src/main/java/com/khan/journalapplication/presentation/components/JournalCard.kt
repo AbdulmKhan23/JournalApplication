@@ -8,20 +8,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,12 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.khan.journalapplication.model.Journal
 import com.khan.journalapplication.util.formatdate
 
@@ -51,116 +44,114 @@ fun JournalCard(
     Card(
         modifier = modifier
             .padding(8.dp)
-            .width(315.dp)
-            .clickable { onClick() }) {
-        Column(modifier = Modifier.fillMaxWidth()
-        , verticalArrangement = Arrangement.Top) {
-        Row(
+            .clickable { onClick() }
+    ) {
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
-            // text row
             Row(
-                modifier = Modifier.padding(8.dp)
-                    .size(
-                        width = 180.dp,
-                        height = 25.dp
-                    ).border(
-                        1.dp,
-                        color = Color.White,
-                        shape = RoundedCornerShape(5.dp)
-                    )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    modifier = modifier.padding(5.dp),
-                    text = journal.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            //Mood row
-            Row(
-                modifier = Modifier.padding(top = 8.dp, end = 8.dp)
-                    .size(width = 120.dp, height = 25.dp)
-                    .border(
-                        1.dp,
-                        color = Color.White,
-                        shape = RoundedCornerShape(5.dp)
-                    ),
-                horizontalArrangement = Arrangement.Center
-            ) {
-
-                Text(modifier = modifier.padding(top = 4.dp), text = journal.mood)
-            }
-
-        }
-        //Content Column
-        Row (
-            modifier = Modifier.fillMaxWidth()
-                .padding(top = 1.dp, end = 8.dp, start = 8.dp, bottom = 8.dp)
-                .border(
-                    1.dp, color = Color.White,
-                    shape = RoundedCornerShape(5.dp)
-                )
-        ) {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = journal.content,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        //TIME
-        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp))
-        {
-            Row(modifier = Modifier.padding(start = 8.dp).size(width = 180.dp,
-                height = 25.dp)
-                    .border(
-                        1.dp, color = Color.White,
-                        shape = RoundedCornerShape(5.dp)))
-            {
-                Text(
-                    modifier = Modifier.padding(top = 5.dp, start = 8.dp, bottom = 5.dp),
-                    text = formatdate(journal.entryDate.time),
-                )
-
-            }
-
-            //DELETE BUTTON
-            Row(modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 8.dp))
-            {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(25.dp)
-                        .border(1.dp, Color.White, RoundedCornerShape(5.dp))
-                        .clickable {
-                            onDeleteJournal(journal)
-                        }
-                        .background(Color.Transparent, RoundedCornerShape(5.dp)),
+                        .wrapContentHeight()
+                        .border(1.dp, color = Color.White, shape = RoundedCornerShape(5.dp))
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    Row (verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(horizontal = 6.dp)){
+                    Text(
+                        text = journal.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .border(1.dp, color = Color.White, shape = RoundedCornerShape(5.dp))
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = journal.mood,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, end = 8.dp, start = 8.dp)
+                    .border(1.dp, color = Color.White, shape = RoundedCornerShape(5.dp))
+                    .padding(8.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = journal.content,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .heightIn(min = 28.dp)
+                        .border(1.dp, color = Color.White, shape = RoundedCornerShape(5.dp))
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = formatdate(journal.entryDate.time),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .heightIn(min = 28.dp)
+                        .border(1.dp, Color.White, RoundedCornerShape(5.dp))
+                        .clickable { onDeleteJournal(journal) }
+                        .background(Color.Transparent, RoundedCornerShape(5.dp))
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete",
                             tint = Color.Black,
                             modifier = Modifier.size(14.dp)
                         )
-                        Spacer(modifier= Modifier.width(20.dp))
                         Text("DELETE", fontSize = 10.sp, color = Color.Black)
                     }
-
                 }
-
-
-
             }
-
         }
-    }
     }
 }
 
