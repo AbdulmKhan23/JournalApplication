@@ -10,8 +10,9 @@ import java.time.Instant
 
 @Entity(tableName = "journal_table")
 data class Journal(
+
     @PrimaryKey
-    val id: UUID = UUID.randomUUID(),
+    val id: String = UUID.randomUUID().toString(),
 
     @ColumnInfo(name = "journal_title")
     val title: String,
@@ -21,6 +22,12 @@ data class Journal(
 
     @ColumnInfo(name = "journal_mood")
     val mood: String,
+
+    @ColumnInfo(name = "supportive_message")
+    val supportiveMessage: String,
+
+    @ColumnInfo(name = "suggestions")
+    val suggestions: List<String>,
 
     @ColumnInfo(name = "journal_date")
     val entryDate: Date= Date.from(Instant.now())

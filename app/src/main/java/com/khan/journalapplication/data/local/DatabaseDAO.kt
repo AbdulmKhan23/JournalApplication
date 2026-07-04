@@ -1,4 +1,4 @@
-package com.khan.journalapplication.data
+package com.khan.journalapplication.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DatabaseDAO {
-    @Query("SELECT * FROM journal_table")
+    @Query("SELECT * FROM journal_table ORDER BY journal_date DESC")
     fun getAllJournals(): Flow<List<Journal>>
 
     @Query("SELECT * FROM journal_table WHERE id = :id")
-    suspend fun getJournalById(id: String): Journal
+    suspend fun getJournalById(id: String): Journal?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertJournal(journal: Journal)
@@ -29,5 +29,3 @@ interface DatabaseDAO {
     @Delete
     suspend fun deleteJournal(journal: Journal)
 }
-
-

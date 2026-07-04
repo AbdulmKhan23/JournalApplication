@@ -19,25 +19,34 @@ import com.khan.journalapplication.model.Journal
 @Composable
 fun JournalInputText(
     modifier: Modifier = Modifier,
-    text: MutableState<String>,
+    text:String,
     label:String,
+    enabled: Boolean = true,
+    readOnly: Boolean  = true,
     onTextChange:(String)->Unit,
-    onImeAction:()->Unit={}){
+    onImeAction:()->Unit={}
+)
+{
     val keyboardController = LocalSoftwareKeyboardController.current
 
 
     OutlinedTextField(
-        value = text.value,
-        onValueChange = {
-            text.value = it
-            onTextChange(it)
+        value = text,
+        onValueChange = onTextChange,
+        enabled = enabled,
+        readOnly = readOnly,
+        label = {
+            Text(text = label)
         },
-        label = { Text(text = label) },
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = {
-            onImeAction()
-            keyboardController?.hide()
-        }),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onImeAction()
+                keyboardController?.hide()
+            }
+        ),
         modifier = modifier
     )
 }

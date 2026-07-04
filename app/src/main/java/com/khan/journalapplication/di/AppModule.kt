@@ -1,10 +1,9 @@
 package com.khan.journalapplication.di
 
 import android.content.Context
-import androidx.room.Room
 import androidx.room.Room.databaseBuilder
-import com.khan.journalapplication.data.Database
-import com.khan.journalapplication.data.DatabaseDAO
+import com.khan.journalapplication.data.local.Database
+import com.khan.journalapplication.data.local.DatabaseDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

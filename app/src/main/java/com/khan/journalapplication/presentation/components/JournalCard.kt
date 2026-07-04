@@ -81,7 +81,7 @@ fun JournalCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = journal.mood,
+                        text = moodWithEmoji(journal.mood),
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -155,15 +155,33 @@ fun JournalCard(
     }
 }
 
-
-
+fun moodWithEmoji(mood: String): String {
+    return when (mood.lowercase()) {
+        "happy" -> "😊 Happy"
+        "sad" -> "😔 Sad"
+        "stressed" -> "😓 Stressed"
+        "motivated" -> "💪 Motivated"
+        "calm" -> "😌 Calm"
+        "anxious" -> "😟 Anxious"
+        "lonely" -> "🥺 Lonely"
+        "excited" -> "🤩 Excited"
+        "overwhelmed" -> "😵 Overwhelmed"
+        else -> "🙂 $mood"
+    }
+}
 
 
 
 @Preview
 @Composable
 fun ArticleCardPreview(){
-    JournalCard(journal = Journal(title = "Hello", content = "The sun dipped slowly behind the hills, painting the sky in shades of orange and pink. A gentle breeze rustled through the tall grass, carrying the scent of wildflowers. Birds chirped their final songs of the day as " +
-            "the world grew quieter. The golden light touched everything it could reach, turning even the smallest " +
-            "pebble into something beautiful. It was a moment of calm, the kind that made you forget time for a while.", mood = "Happy"), onClick = {}, onDeleteJournal = {})
+    JournalCard(journal = Journal(
+        title = "Hello",
+        content = "The sun dipped slowly behind the hills, painting the sky in shades of orange and pink. A gentle breeze rustled through the tall grass, carrying the scent of wildflowers. Birds chirped their final songs of the day as " +
+                "the world grew quieter. The golden light touched everything it could reach, turning even the smallest " +
+                "pebble into something beautiful. It was a moment of calm, the kind that made you forget time for a while.",
+        mood = "Happy",
+        supportiveMessage = "You had a very calm day ",
+        suggestions = listOf("take a break ","plan tomorrow")
+    ), onClick = {}, onDeleteJournal = {})
 }

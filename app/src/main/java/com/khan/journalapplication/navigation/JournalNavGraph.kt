@@ -7,6 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.khan.journalapplication.presentation.DetailScreen.DetailScreen
 import com.khan.journalapplication.presentation.HomeScreen.HomeScreen
 import com.khan.journalapplication.presentation.HomeScreen.HomeViewModel
 import com.khan.journalapplication.presentation.JournalScreen.JournalScreen
@@ -25,21 +28,37 @@ fun JournalNavGraph() {
             HomeScreen(
                 journal = journals,
                 onRemoveJournal = { journal ->
-                    homeViewModel.removeNote(journal)
+                    homeViewModel.removeJournal(journal)
                 },
                 onAddJournalClick = {
                     navController.navigate("journal")
+                },
+                onJournalClick = { journal ->
+                    navController.navigate("details/${journal.id}")
                 }
             )
         }
+
         composable("journal") {
-            JournalScreen(
-                onAddJournal = { journal ->
-                    homeViewModel.addNote(journal)
-                    navController.popBackStack()
+                    JournalScreen ()
+    }
+        composable(
+            route = "details/{journalId}",
+            arguments = listOf(
+                navArgument("journalId") {
+                    type = NavType.StringType
                 }
             )
+        ) { backStackEntry ->
+
+            val journalId =
+                backStackEntry.arguments?.getString("journalId")
+
+            DetailScreen(
+                journalId = journalId
+            )
         }
+
     }
 }
 

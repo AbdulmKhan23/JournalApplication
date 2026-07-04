@@ -1,27 +1,107 @@
 package com.khan.journalapplication.presentation.JournalScreen
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.khan.journalapplication.repository.FakeAIRepo
+import androidx.lifecycle.viewModelScope
+import com.khan.journalapplication.data.repository.JournalRepo
+import com.khan.journalapplication.model.Journal
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class JournalViewModel : ViewModel() {
-    private val  AIrepository  = FakeAIRepo()
+@HiltViewModel
+class JournalViewModel @Inject constructor(
+    private val repository: JournalRepo
+) : ViewModel(){
 
-    private val _suggestion = MutableStateFlow<List<String>>(emptyList())
-    val suggestion: StateFlow<List<String>> = _suggestion
+    private val _suggestions = MutableStateFlow<List<String>>(emptyList())
+    val suggestions: StateFlow<List<String>> = _suggestions
+
+    private val _supportiveMessage = MutableStateFlow("")
+    val supportiveMessage: StateFlow<String> = _supportiveMessage
+
+    private val _mood = MutableStateFlow("")
+    val mood: StateFlow<String> = _mood
 
     private val _showSuggestions = MutableStateFlow(false)
     val showSuggestions: StateFlow<Boolean> = _showSuggestions
 
-    fun saveJournal() {
-        // Later: save journal to Room
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
-        // Generate AI suggestions
-        val result = AIrepository.getSuggestions()
-        _suggestion.value = result.suggestions
-        _showSuggestions.value = true
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+    private val _canSave = MutableStateFlow(true)
+    val canSave: StateFlow<Boolean> = _canSave
+
+
+    private var lastTitle = ""
+    private var lastContent = ""
+
+    fun onJournalChanged(
+        title: String,
+        content: String
+    ) {
+        _canSave.value =
+            title != lastTitle ||
+                    content != lastContent
+    }
+
+
+
+    fun saveJournal(
+        title: String,
+        content: String
+    ) {
+
+        viewModelScope.launch {
+
+            _isLoading.value = true
+            _error.value = null
+
+            try {
+
+                // Call FastAPI -> Gemini
+                val aiResponse = repository.analyzeJournal(content)
+
+                // Update UI
+                _mood.value = aiResponse.mood
+                _supportiveMessage.value = aiResponse.supportive_message
+                _suggestions.value = aiResponse.suggestions
+                _showSuggestions.value = true
+
+                // Save to Room
+                val journal = Journal(
+                    title = title,
+                    content = content,
+                    mood = aiResponse.mood,
+                    supportiveMessage = aiResponse.supportive_message,
+                    suggestions = aiResponse.suggestions
+                )
+
+                repository.addJournal(journal)
+
+                // Remember last analyzed text
+                lastTitle = title
+                lastContent = content
+
+                // Disable Save until something changes
+                _canSave.value = false
+
+            } catch (e: Exception) {
+
+                _error.value = e.message ?: "Something went wrong."
+
+            } finally {
+
+                _isLoading.value = false
+
+            }
+
+        }
+
     }
 }
 
