@@ -19,6 +19,10 @@ fun JournalNavGraph() {
     val navController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val journals by homeViewModel.journalList.collectAsState()
+    val isOnline by homeViewModel.isOnline.collectAsState()
+    val isRefreshing by homeViewModel.isRefreshing.collectAsState()
+    val syncMessage by homeViewModel.syncMessage.collectAsState()
+
 
     NavHost(
         navController = navController,
@@ -27,6 +31,10 @@ fun JournalNavGraph() {
         composable("home") {
             HomeScreen(
                 journal = journals,
+                isOnline = isOnline,
+                isRefreshing = isRefreshing,
+                syncMessage = syncMessage,
+                onRefresh = homeViewModel::syncDraftJournals,
                 onRemoveJournal = { journal ->
                     homeViewModel.removeJournal(journal)
                 },
@@ -40,7 +48,13 @@ fun JournalNavGraph() {
         }
 
         composable("journal") {
-                    JournalScreen ()
+                    JournalScreen (
+                        isOnline = isOnline,
+                        onAddJournal = { journal ->
+                            homeViewModel.addJournal(journal)
+                            navController.popBackStack()
+                        }
+                    )
     }
         composable(
             route = "details/{journalId}",

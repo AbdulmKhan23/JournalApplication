@@ -28,4 +28,13 @@ interface DatabaseDAO {
 
     @Delete
     suspend fun deleteJournal(journal: Journal)
+
+    @Query(
+        """
+    SELECT * FROM journal_table
+    WHERE is_draft = 1
+    ORDER BY journal_date DESC
+    """
+    )
+    suspend fun getDraftJournals(): List<Journal>
 }

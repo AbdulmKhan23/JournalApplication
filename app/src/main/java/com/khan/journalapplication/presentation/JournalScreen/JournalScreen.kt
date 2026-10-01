@@ -1,5 +1,6 @@
 package com.khan.journalapplication.presentation.JournalScreen
 
+import android.R.attr.onClick
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -35,11 +36,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.khan.journalapplication.model.Journal
 import com.khan.journalapplication.presentation.components.JournalInputText
 import com.khan.journalapplication.presentation.components.SuggestionsCard
 
 @Composable
-fun JournalScreen() {
+fun JournalScreen(
+    isOnline: Boolean,
+    onAddJournal: (Journal) -> Unit
+) {
 
     val viewModel : JournalViewModel= hiltViewModel()
 
@@ -118,32 +123,83 @@ fun JournalScreen() {
                     modifier= Modifier.padding(horizontal = 12.dp))
             }
 
-                //SAVE BUTTON
-                Button(
-                    onClick = {viewModel.saveJournal(
-                        title=title,
-                        content=content
-                    )
-                    },
-                    enabled = !isLoading && canSave,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(70.dp)
-                        .padding(12.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp
+            //SAVE BUTTON
+            Button(
+                onClick = {
+                    if (isOnline) {
+                        viewModel.saveJournal(
+                            title = title,
+                            content = content
                         )
                     } else {
-                        Text("Save")
+                        onAddJournal(
+                            Journal(
+                                title = title,
+                                content = content,
+                                mood = "Neutral",
+                                supportiveMessage = "",
+                                suggestions = emptyList(),
+                                isDraft = true
+                            )
+                        )
                     }
+                },
+                enabled = !isLoading &&
+                        canSave &&
+                        title.isNotBlank() &&
+                        content.isNotBlank(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(12.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                if (isLoading && isOnline) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = if (isOnline) {
+                            "Save"
+                        } else {
+                            "Save as draft"
+                        }
+                    )
                 }
+            }
+//                Button(
+//                    onClick = {viewModel.saveJournal(
+//                        title=title,
+//                        content=content,
+//                    )
+//                    },
+//
+//                    enabled = !isLoading && canSave && isOnline,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(70.dp)
+//                        .padding(12.dp),
+//                    shape = RoundedCornerShape(20.dp),
+//                    colors = ButtonDefaults.buttonColors(
+//                        containerColor = MaterialTheme.colorScheme.primary
+//                    )
+//                )
+//                {
+//                    if (isLoading && isOnline) {
+//                        CircularProgressIndicator(
+//                            modifier = Modifier.size(24.dp),
+//                            strokeWidth = 2.dp
+//                        )
+//                        Text("Save")
+//                    } else {
+//                        Text("Save as draft")
+//                    }
+//                }
         }
 }
 
@@ -151,5 +207,5 @@ fun JournalScreen() {
 @Preview(showBackground = true)
 @Composable
 fun JournalScreenPreview(){
-    JournalScreen()
+    JournalScreen(isOnline = true, onAddJournal = {})
 }

@@ -30,5 +30,8 @@ data class Journal(
     val suggestions: List<String>,
 
     @ColumnInfo(name = "journal_date")
-    val entryDate: Date= Date.from(Instant.now())
+    val entryDate: Date= Date.from(Instant.now()),
+
+    @ColumnInfo(name = "is_draft", defaultValue = "0")
+    val isDraft: Boolean = false
 )

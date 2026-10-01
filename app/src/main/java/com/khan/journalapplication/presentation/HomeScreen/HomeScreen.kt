@@ -34,10 +34,15 @@ import androidx.compose.ui.unit.dp
 import com.khan.journalapplication.model.Journal
 import com.khan.journalapplication.presentation.components.JournalList
 import com.khan.journalapplication.presentation.components.SearchBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 
 @Composable
 fun HomeScreen(
     journal:List<Journal>,
+    isOnline: Boolean,
+    isRefreshing: Boolean,
+    syncMessage: String?,
+    onRefresh: () -> Unit,
     onAddJournalClick: () -> Unit,
     onRemoveJournal: (Journal) -> Unit,
     onJournalClick:(Journal)-> Unit
@@ -119,14 +124,43 @@ fun HomeScreen(
                 placeholder = "Search journal entries..."
             )
             //JOURNAL LIST
-            JournalList(
-                journals=filteredJournals,
-                onJournalClicked = onJournalClick,
-                onDeleteJournal = {journal ->
-                    journalToDelete = journal
-                })
+            if (!isOnline) {
+                Text(
+                    text = "No internet connection. You can still save entries as drafts.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(
+                        start = 8.dp,
+                        top = 8.dp,
+                        end = 8.dp,
+                        bottom = 4.dp
+                    )
+                )
+            }
+            syncMessage?.let { message ->
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(
+                        horizontal = 8.dp,
+                        vertical = 4.dp
+                    )
+                )
+            }
 
-
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier.weight(1f)
+            ){
+                JournalList(
+                    journals=filteredJournals,
+                    onJournalClicked = onJournalClick,
+                    onDeleteJournal = {journal ->
+                        journalToDelete = journal
+                    })
+            }
         }
         //ADD BUTTON
         Row(modifier = Modifier
