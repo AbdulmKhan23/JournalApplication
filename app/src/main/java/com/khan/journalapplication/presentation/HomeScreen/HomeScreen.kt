@@ -1,6 +1,10 @@
 package com.khan.journalapplication.presentation.HomeScreen
 
+import android.R
+import android.R.attr.onClick
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,14 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,161 +42,20 @@ import com.khan.journalapplication.model.Journal
 import com.khan.journalapplication.presentation.components.JournalList
 import com.khan.journalapplication.presentation.components.SearchBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.ui.res.colorResource
 
 @Composable
 fun HomeScreen(
-    journal:List<Journal>,
-    isOnline: Boolean,
-    isRefreshing: Boolean,
-    syncMessage: String?,
-    onRefresh: () -> Unit,
     onAddJournalClick: () -> Unit,
-    onRemoveJournal: (Journal) -> Unit,
-    onJournalClick:(Journal)-> Unit
     ){
+    val appBackground = colorResource(id = com.khan.journalapplication.R.color.app_background)
     Surface {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.safeDrawing)
+                .background(appBackground)
                 .padding(16.dp)
         ) {
-
-            var searchText by rememberSaveable { mutableStateOf("") }
-
-            val filteredJournals = remember(searchText, journal) {
-                if (searchText.isBlank()) {
-                    journal
-                } else {
-                    journal.filter {
-                        it.title.contains(searchText, ignoreCase = true)
-                    }
-                }
-            }
-
-            var journalToDelete by remember {
-                mutableStateOf<Journal?>(null)
-            }
-            if (journalToDelete != null) {
-
-                AlertDialog(
-                    onDismissRequest = {
-                        journalToDelete = null
-                    },
-
-                    title = {
-                        Text("Delete Journal")
-                    },
-
-                    text = {
-                        Text("Are you sure you want to delete this journal?")
-                    },
-
-                    confirmButton = {
-
-                        TextButton(
-                            onClick = {
-                                onRemoveJournal(journalToDelete!!)
-                                journalToDelete = null
-                            }
-                        ) {
-                            Text("Delete")
-                        }
-
-                    },
-
-                    dismissButton = {
-
-                        TextButton(
-                            onClick = {
-                                journalToDelete = null
-                            }
-                        ) {
-                            Text("Cancel")
-                        }
-
-                    }
-
-                )
-
-            }
-
-            // SEARCH FUNCTION
-            SearchBar(
-                text = searchText,
-                onQueryChange = {
-                    searchText=it
-                },
-                placeholder = "Search journal entries..."
-            )
-            //JOURNAL LIST
-            if (!isOnline) {
-                Text(
-                    text = "No internet connection. You can still save entries as drafts.",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(
-                        start = 8.dp,
-                        top = 8.dp,
-                        end = 8.dp,
-                        bottom = 4.dp
-                    )
-                )
-            }
-            syncMessage?.let { message ->
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(
-                        horizontal = 8.dp,
-                        vertical = 4.dp
-                    )
-                )
-            }
-
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = onRefresh,
-                modifier = Modifier.weight(1f)
-            ){
-                JournalList(
-                    journals=filteredJournals,
-                    onJournalClicked = onJournalClick,
-                    onDeleteJournal = {journal ->
-                        journalToDelete = journal
-                    })
-            }
         }
-        //ADD BUTTON
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp))   {
-            // Button positioned at bottom using Box
-            Box(modifier = Modifier.fillMaxSize()) {
-                Button(
-                    onClick = { onAddJournalClick() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(70.dp)
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Journal",
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                }
-            }
-        }
-
-
     }
-
 }

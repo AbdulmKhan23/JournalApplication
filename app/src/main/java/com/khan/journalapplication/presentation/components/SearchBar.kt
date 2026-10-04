@@ -71,7 +71,7 @@ fun SearchBar(
                 keyboardController?.hide()
             }
         ),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outline,
