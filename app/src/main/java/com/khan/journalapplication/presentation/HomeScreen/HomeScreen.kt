@@ -10,13 +10,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.khan.journalapplication.R
 import com.khan.journalapplication.model.Journal
+import com.khan.journalapplication.presentation.components.DailyQuoteCard
 import com.khan.journalapplication.presentation.components.JournalCalendar
 import com.khan.journalapplication.util.greeting
 
@@ -27,7 +33,11 @@ fun HomeScreen(
 {
         val appBackground = colorResource(id = R.color.app_background)
         val textColor = colorResource(id = R.color.app_text)
-        Column(
+
+    val quoteViewModel: DailyQuoteViewModel = hiltViewModel()
+    val quote by quoteViewModel.quote.collectAsState()
+
+    Column(
             modifier = Modifier
                 .background(appBackground)
                 .padding(16.dp)
@@ -42,6 +52,13 @@ fun HomeScreen(
             Spacer(Modifier.height(24.dp))
 
             JournalCalendar(journals = journal)
+
+        Spacer(Modifier.height(16.dp))
+
+        quote?.let {
+            DailyQuoteCard(quote = it.quote)
+        }
+
         }
 
 }

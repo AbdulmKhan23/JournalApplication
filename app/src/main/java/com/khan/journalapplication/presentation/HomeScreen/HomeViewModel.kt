@@ -2,6 +2,8 @@ package com.khan.journalapplication.presentation.HomeScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.khan.journalapplication.data.remote.DailyQuoteResponse
+import com.khan.journalapplication.data.remote.JournalApi
 import com.khan.journalapplication.model.Journal
 import com.khan.journalapplication.data.repository.JournalRepo
 import com.khan.journalapplication.util.NetworkMonitor
@@ -9,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -76,4 +79,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+
 }
