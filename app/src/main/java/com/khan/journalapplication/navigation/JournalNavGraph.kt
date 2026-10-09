@@ -118,10 +118,15 @@ fun JournalNavGraph() {
         ) {
             composable(MainTab.Home.route) {
                 // Intentionally blank for now.
+
+
                 Box(modifier = Modifier
                     .fillMaxSize()
                     .background(appBackground))
                 {
+                    HomeScreen(
+                        journal = journals
+                    )
                     FloatingActionButton(
                         onClick = {
                             navController.navigate("journal")
@@ -139,6 +144,7 @@ fun JournalNavGraph() {
                         )
                     }
                 }
+
             }
 
             composable(MainTab.Search.route) {
