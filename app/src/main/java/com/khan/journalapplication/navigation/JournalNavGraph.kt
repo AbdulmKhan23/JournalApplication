@@ -48,10 +48,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.khan.journalapplication.model.Journal
+import com.khan.journalapplication.presentation.BreatheScreen.BreatheScreen
 import com.khan.journalapplication.presentation.DetailScreen.DetailScreen
 import com.khan.journalapplication.presentation.HomeScreen.HomeScreen
 import com.khan.journalapplication.presentation.HomeScreen.HomeViewModel
 import com.khan.journalapplication.presentation.JournalScreen.JournalScreen
+import com.khan.journalapplication.presentation.ReflectScreen.ReflectScreen
 import com.khan.journalapplication.presentation.SearchScreen.SearchScreen
 
 private enum class MainTab(val route: String, val label: String) {
@@ -125,7 +127,13 @@ fun JournalNavGraph() {
                     .background(appBackground))
                 {
                     HomeScreen(
-                        journal = journals
+                        journal = journals,
+                        onBreatheClick = {
+                            navController.navigate("breathe")
+                        },
+                        onReflectClick = {
+                            navController.navigate("reflect")
+                        }
                     )
                     FloatingActionButton(
                         onClick = {
@@ -187,6 +195,23 @@ fun JournalNavGraph() {
             ) { backStackEntry ->
                 DetailScreen(
                     journalId = backStackEntry.arguments?.getString("journalId")
+                )
+            }
+
+            composable("breathe") {
+                BreatheScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable("reflect") {
+                ReflectScreen(
+                    onAddJournal = homeViewModel::addJournal,
+                    onSaved = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }

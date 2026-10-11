@@ -77,14 +77,20 @@ fun DetailScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            item{
-                SuggestionsCard(mood = it.mood,
-                    supportiveMessage = it.supportiveMessage,
-                    suggestions = it.suggestions)
-
+            if (
+                (it.mood.isNotBlank() &&
+                    !it.mood.equals("Reflection", ignoreCase = true)) ||
+                it.supportiveMessage.isNotBlank() ||
+                it.suggestions.isNotEmpty()
+            ) {
+                item {
+                    SuggestionsCard(
+                        mood = it.mood,
+                        supportiveMessage = it.supportiveMessage,
+                        suggestions = it.suggestions
+                    )
+                }
             }
-
-
         }
 
 

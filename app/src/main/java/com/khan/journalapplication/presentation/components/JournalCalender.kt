@@ -40,8 +40,12 @@ fun JournalCalendar(
     val calendarBackground = colorResource(R.color.app_background)
     val textColor = colorResource(R.color.app_text)
 
-    // If there are multiple entries on one date, the latest entry supplies its mood.
+    // Reflections have no mood, so only journal entries contribute calendar mood colors.
     val moodByDate = journals
+        .filter {
+            it.mood.isNotBlank() &&
+                !it.mood.equals("Reflection", ignoreCase = true)
+        }
         .groupBy { journal ->
             Instant.ofEpochMilli(journal.entryDate.time)
                 .atZone(ZoneId.systemDefault())

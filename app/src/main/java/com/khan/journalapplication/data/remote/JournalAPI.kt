@@ -17,4 +17,9 @@ interface JournalApi {
     suspend fun getDailyQuote(
         @Query("date") date: String
     ): DailyQuoteResponse
+
+    @POST("reflect-question")
+    suspend fun getReflectQuestion(
+        @Body request: ReflectQuestionRequest
+    ): ReflectQuestionResponse
 }

@@ -4,7 +4,11 @@ import com.khan.journalapplication.data.local.DatabaseDAO
 import com.khan.journalapplication.data.remote.JournalApi
 import com.khan.journalapplication.data.remote.JournalRequest
 import com.khan.journalapplication.data.remote.JournalResponse
+import com.khan.journalapplication.data.remote.ReflectQuestionRequest
+import com.khan.journalapplication.data.remote.ReflectQuestionResponse
+import com.khan.journalapplication.data.remote.ReflectQuestionStore
 import com.khan.journalapplication.model.Journal
+import com.khan.journalapplication.presentation.ReflectScreen.ReflectViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +20,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class JournalRepo @Inject constructor(
     private val journalDao: DatabaseDAO,
-    private val journalApi: JournalApi
+    private val journalApi: JournalApi,
+    private val reflectQuestionStore: ReflectQuestionStore
 )
 {
     // ROOM
@@ -40,6 +45,21 @@ class JournalRepo @Inject constructor(
         return journalApi.analyzeJournal(
             JournalRequest(entry)
         )
+    }
+
+    suspend fun getReflectQuestion(): ReflectQuestionResponse {
+        val previousQuestions =
+            reflectQuestionStore.getPreviousQuestions().toList()
+
+        val response = journalApi.getReflectQuestion(
+            ReflectQuestionRequest(
+                excluded_questions = previousQuestions
+            )
+        )
+
+        reflectQuestionStore.rememberQuestion(response.question)
+
+        return response
     }
 
     data class DraftSyncResult(

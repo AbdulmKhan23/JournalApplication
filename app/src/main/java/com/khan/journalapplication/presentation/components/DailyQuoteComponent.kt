@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.khan.journalapplication.R
 
@@ -30,7 +31,8 @@ fun DailyQuoteCard(
     ) {
         Text(
             text = quote,
-            modifier = Modifier.padding(14.dp),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(16.dp),
             color = textColor,
             style = MaterialTheme.typography.bodyLarge
         )

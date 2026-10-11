@@ -86,20 +86,24 @@ fun JournalCard(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Row(modifier= Modifier
-                    .wrapContentSize()
-                    .padding(8.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .background(moodLable(journal.mood),CircleShape)
-                            .padding(24.dp),
-                        contentAlignment = Alignment.Center
-                    ){
+                if (
+                    journal.mood.isNotBlank() &&
+                    !journal.mood.equals("Reflection", ignoreCase = true)
+                ) {
+                    Row(modifier= Modifier
+                        .wrapContentSize()
+                        .padding(8.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(moodLable(journal.mood),CircleShape)
+                                .padding(24.dp),
+                            contentAlignment = Alignment.Center
+                        ){
 
+                        }
                     }
                 }
-
             }
             Box(
                 modifier = Modifier
