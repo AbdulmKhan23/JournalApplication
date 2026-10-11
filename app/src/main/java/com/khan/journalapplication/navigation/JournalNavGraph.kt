@@ -75,6 +75,7 @@ fun JournalNavGraph() {
     val fabColor = colorResource(id = com.khan.journalapplication.R.color.app_text)
 
     Scaffold(
+        containerColor = appBackground,
         bottomBar = {
             NavigationBar(containerColor = appBackground){
                 MainTab.entries.forEach { tab ->

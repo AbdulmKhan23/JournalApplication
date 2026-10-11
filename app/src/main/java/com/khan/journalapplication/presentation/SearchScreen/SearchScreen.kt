@@ -35,7 +35,9 @@ import com.khan.journalapplication.model.Journal
 import com.khan.journalapplication.presentation.components.JournalList
 import com.khan.journalapplication.presentation.components.SearchBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.colorResource
+import com.khan.journalapplication.R
 
 @Composable
 fun SearchScreen(
