@@ -1,0 +1,1 @@
+package com.khan.journalapplication.presentation.SubscriptionScreen

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,7 +24,7 @@ fun SearchBar(
     text: String,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit = {},
-    placeholder: String = "Search entries...",
+    placeholder: String = "Search",
     enabled: Boolean = true
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -37,6 +38,7 @@ fun SearchBar(
         placeholder = {
             Text(
                 text = placeholder,
+                fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },

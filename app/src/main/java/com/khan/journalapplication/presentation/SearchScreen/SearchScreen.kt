@@ -122,7 +122,7 @@ fun SearchScreen(
                 onQueryChange = {
                     searchText=it
                 },
-                placeholder = "Search journal entries..."
+                placeholder = "Search"
             )
             //JOURNAL LIST
             if (!isOnline) {
